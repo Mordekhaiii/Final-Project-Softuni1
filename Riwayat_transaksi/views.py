@@ -9,34 +9,38 @@ from django.contrib import messages
 
 @login_required
 def complete_order(request):
-    # Ambil semua payment terkait pengguna
     payments = Payment.objects.filter(user=request.user)
 
-    if payments.exists():
-        try:
-            with transaction.atomic():  # Pastikan semua operasi dilakukan secara atomik
-                for payment in payments:
-                    # Pindahkan data ke TransactionHistory
-                    TransactionHistory.objects.create(
-                        date=payment.date,
-                        user=payment.user,
-                        perfume=payment.product,  # Pastikan field sesuai model TransactionHistory
-                        quantity=payment.quantity,
-                        total_price=payment.total_price,
-                    )
+    if not payments.exists():
+        print("No payments found for the user.")
+        messages.info(request, "No payments to process.")
+        return redirect('transaction_history')
 
-                    # Hapus data dari Payment setelah disimpan di TransactionHistory
-                    payment.delete()
+    try:
+        with transaction.atomic():
+            for payment in payments:
+                print(f"Processing payment: {payment.id}, product: {payment.product.name}")
+                # Tambahkan data ke TransactionHistory
+                TransactionHistory.objects.create(
+                    date=payment.date,
+                    user=payment.user,
+                    product=payment.product,  # Mengubah 'perfume' menjadi 'product'
+                    quantity=payment.quantity,
+                    total_price=payment.total_price,
+                )
+                print(f"Transaction saved for product: {payment.product.name}")
+                # Hapus data di Payment
+                payment.delete()
+        messages.success(request, "All payments have been successfully moved to transaction history.")
+    except Exception as e:
+        print(f"Error occurred during transaction: {e}")
+        messages.error(request, f"An error occurred: {e}")
+        return redirect('payment_list')
 
-                # Tambahkan pesan sukses
-                messages.success(request, "Payment completed and moved to transaction history.")
-        except Exception as e:
-            # Jika ada error, tampilkan pesan dan kembali ke halaman payment_list
-            messages.error(request, f"An error occurred: {str(e)}")
-            return redirect('payment_list')
-
-    # Redirect ke halaman riwayat transaksi setelah berhasil
     return redirect('transaction_history')
+
+
+
 
 
 @login_required
