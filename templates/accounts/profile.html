@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Body styling */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #1b1b2f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Card container */
+        .profile-card {
+            width: 600px;
+            background: #2f3542;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            color: #fff;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* Left section (image & title) */
+        .profile-card .left-section {
+            background: linear-gradient(135deg, #4070f4, #7040f4);
+            padding: 30px;
+            text-align: center;
+            flex: 1;
+        }
+
+        .profile-card .left-section img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            margin-bottom: 20px;
+        }
+
+        .profile-card .left-section h2 {
+            font-size: 20px;
+            margin: 10px 0;
+        }
+
+        .profile-card .left-section p {
+            font-size: 14px;
+            color: #d1d1d1;
+        }
+
+        /* Right section (details) */
+        .profile-card .right-section {
+            padding: 30px;
+            flex: 2;
+        }
+
+        .profile-card .right-section h3 {
+            color: #4caf50;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .profile-card .right-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .profile-card .right-section ul li {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .profile-card .right-section ul li span {
+            font-weight: bold;
+            color: #d1d1d1;
+        }
+
+        /* Social media icons */
+        .social-icons {
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            margin-right: 10px;
+            color: #fff;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        .back-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+
+        .social-icons a:hover {
+            color: #4070f4;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 12px;
+            color: #d1d1d1;
+        }
+        .edit-profile-btn {
+            display: inline-block;
+            padding: 7px 12px;
+            background-color: #ffc107; /* Warna kuning */
+            color: #212529; /* Warna teks */
+            border: 2px solid #ffc107;
+            border-radius: 10px; /* Membuat sudut melengkung */
+            text-decoration: none; /* Menghapus underline */
+            font-size: 11px;
+            font-weight: bold;
+            text-align: center;
+            margin: 2px 0; /* Jarak vertikal */
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .edit-profile-btn:hover {
+            background-color: #e0a800; /* Warna hover */
+            color: white;
+        }
+        .home-link {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            text-decoration: none;
+            padding: 8px 12px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .home-link:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <a href="{% url 'home' %}" class="home-link">Home</a>
+
+    <div class="profile-card">
+        <!-- Left section -->
+        <div class="left-section">
+            <img src="https://via.placeholder.com/100" alt="Profile Picture">
+            <h2>{{ user.username }}</h2>
+            <a1>Web Developer</a1>
+            <div class="footer">
+                <a href="{% url 'edit_profile' %}" class="edit-profile-btn">Edit Profile</a>
+                <a href="{% url 'update_profile' %}" class="edit-profile-btn">Update Profile</a>
+            </div>
+        </div>
+
+        <!-- Right section -->
+        <div class="right-section">
+            <h3>Profile Details</h3>
+            <ul>
+                <li><span>Name:</span> {{ full_name }}</li>
+                <li><span>Age:</span> {{ profile.age }}</li>
+                <li><span>Mobile:</span> {{ profile.phone_number }}</li>
+                <li><span>Email:</span> {{ user.email }}</li>
+                <li><span>Address:</span> {{ profile.address }}</li>
+            </ul>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

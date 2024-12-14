@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% if editMode %} Edit Produk {% else %} Tambah Produk Baru {% endif %}</title>
+    <link rel="icon" href="{% static 'images/logo.jpg' %}">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,300;0,400;0,700;1,700&display=swap" rel="stylesheet" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/product_crud_list.css' %}?v={{ timestamp }}">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a href="{% url 'home' %}" class="navbar-logo">Oey Alycia Resto & Cafe</a>
+    <div class="navbar-nav">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'product_list' %}">Produk</a>
+        <a href="{% url 'order_list' %}">Pesanan Saya</a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
+        {% else %}
+            <a href="{% url 'login' %}" class="btn-login">Login</a>
+        {% endif %}
+    </div>
+</nav>
+
+<!-- Product Form Section -->
+<div class="container">
+    <h1>{% if editMode %} Edit Produk {% else %} Tambah Produk Baru {% endif %}</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{ product.id }}">
+
+        <label for="name">Nama Produk</label>
+        <input type="text" name="name" id="name" value="{{ product.name }}" required>
+
+        <label for="description">Deskripsi</label>
+        <textarea name="description" id="description">{{ product.description }}</textarea>
+
+        <label for="price">Harga</label>
+        <input type="number" name="price" id="price" value="{{ product.price }}" required>
+
+        <label for="img">Gambar</label>
+        <input type="file" name="img" id="img">
+
+        <button type="submit" class="btn btn-success">{% if editMode %} Perbarui {% else %} Tambah {% endif %}</button>
+    </form>
+</div>
+
+</body>
+</html>

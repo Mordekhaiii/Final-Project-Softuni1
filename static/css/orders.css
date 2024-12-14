@@ -1,0 +1,117 @@
+/* General styles */
+:root {
+  --primary: #b6895b;
+  --bg: #010101;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg);
+  color: #fff;
+  line-height: 1.6;
+}
+
+header {
+  background-color: var(--primary);
+  color: #fff;
+  padding: 1rem 0;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+main {
+  padding: 2rem;
+  max-width: 900px;
+  margin: auto;
+  background: #1b1b1b;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  color: #fff;
+}
+
+h2 {
+  color: var(--primary);
+  margin-top: 0;
+}
+
+p {
+  margin: 0.5rem 0;
+}
+
+/* Table styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  color: #fff;
+}
+
+table th, table td {
+  text-align: left;
+  padding: 0.5rem;
+  border: 1px solid #333;
+}
+
+table th {
+  background-color: var(--primary);
+  color: #fff;
+}
+
+table tbody tr:nth-child(even) {
+  background-color: #2a2a2a;
+}
+
+table tbody tr:hover {
+  background-color: #444;
+}
+
+/* Button styles */
+.button {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #9e7a50;
+}
+
+/* Footer styles */
+footer {
+  text-align: center;
+  padding: 1rem;
+  background-color: var(--primary);
+  color: #fff;
+  margin-top: 2rem;
+  border-radius: 0 0 8px 8px;
+}
+
+footer p {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  main {
+    width: 95%;
+  }
+
+  table {
+    font-size: 14px;
+  }
+
+  th, td {
+    padding: 10px;
+  }
+}

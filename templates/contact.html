@@ -1,0 +1,146 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oey Alycia Resto & Cafe</title>
+      <link rel="icon" href="{% static "images/logo.jpg"  %}">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,300;0,400;0,700;1,700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <!-- My CSS -->
+      <link rel="stylesheet" href="{% static 'css/contact.css' %}" />
+
+    {# JS #}
+      <script src="{% static 'js/kontak.js' %}"></script>
+
+
+    <!-- AlpineJS -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,300;0,400;0,700;1,700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Navbar Start -->
+ <nav class="navbar" x-data="{ isLoggedIn: {{ user.is_authenticated|yesno:"true,false" }} }">
+      <a href="{% url 'home' %}" class="navbar-logo">
+        Oey <span>Alycia</span> Resto & <span>Cafe</span>
+      </a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="navbar-nav">
+        <a href="{% url "home" %}">Home</a>
+        <a href="#about">Tentang Kami</a>
+        <a href="#menu">Menu</a>
+        <a href="{% url 'product_list' %}">Produk</a>
+        <a href="{% url 'contact' %}">Kontak</a>
+        {% csrf_token %}
+
+        <!-- Tombol Kartu Member (Muncul saat belum login) -->
+        <a
+          href="{% url 'login' %}"
+          x-show="!isLoggedIn"
+          class="rounded-full bg-white px-[10px] py-[6px] text-xs uppercase text-black transition-colors hover:bg-black hover:text-white lg:hidden"
+        >
+          Kartu Member
+        </a>
+
+        <!-- Tombol Logout dan Profil (Muncul saat sudah login) -->
+        <a
+          href="{% url 'logout' %}"
+          x-show="isLoggedIn"
+          class="rounded-full bg-white px-[10px] py-[6px] text-xs uppercase text-black transition-colors hover:bg-black hover:text-white lg:hidden"
+        >
+          Logout
+        </a>
+        <a
+          href="{% url 'profile' %}"
+          x-show="isLoggedIn"
+          class="navbar-item"
+        >
+          Hi, {{ user.username }}
+        </a>
+      </div>
+          <div class="navbar-extra">
+              <a href="#" id="hamburger-menu"><i data-feather="menu"></i></a>
+      </div>
+    </nav>
+    <!-- Navbar end -->
+
+    <!-- Jumbotron -->
+    <div class="container-fluid jumbotron jumbotron-contact">
+      <div class="container">
+        <div class="jumbotron-text text-center">
+            <h1 class="tengah">Kontak <span>Kami</span></h1>
+        </div>
+      </div>
+    </div>
+    <!-- Akhir Jumbotron -->
+
+    <!-- Maps  -->
+<div class="contact-section" id="contact">
+  <!-- Map -->
+  <div class="map-container">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3963.845052948106!2d106.7161618654158!3d-6.541242440098378!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69dd00115b0dbf%3A0x186198fa5892e5d1!2sOey%20Alycia%20Resto%20%26%20Cafe!5e0!3m2!1sid!2sid!4v1729786918953!5m2!1sid!2sid"
+      allowfullscreen=""
+      loading="lazy"
+    ></iframe>
+  </div>
+
+  <!-- Kontak Kami -->
+  <div class="contact-container">
+    <div class="contact-content">
+      <h2>Informasi <span>Kontak</span></h2>
+      <ul>
+          <p>Jika Anda mempunyai pertanyaan atau kekhawatiran, Anda dapat menghubungi kami dengan mengisi formulir kontak, menelepon kami, datang ke kantor kami, menemukan kami di jejaring sosial lain, atau Anda dapat mengirim email pribadi kepada kami di:
+            <li><i data-feather="phone"></i> +62 896-5886-8111</li>
+            <li><i data-feather="instagram"></i> Oey Alycia Resto & Cafe</li>
+            <li><i data-feather="mail"></i> oeyalyciarestocafe@gmail.com</li>
+            <li><i data-feather="map-pin"></i> Bogor, Rancabungur</li>
+          </p>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <!-- My JS -->
+    <script src="{% static 'js/footer.js' %}"></script>
+
+    <!-- Feather Icons -->
+    <script>
+  feather.replace();
+</script>
+
+  </body>
+</html>

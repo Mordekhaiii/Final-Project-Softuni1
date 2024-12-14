@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Setting</title>
+
+    <link rel="stylesheet" href="{% static 'css/product_setting.css' %}">
+</head>
+<body>
+
+    <h1>Product List</h1>
+    <div class="product-list">
+        {% for item in products_with_stock %}
+            <div class="product-item">
+                <div class="product-details">
+                    <div class="product-name">{{ item.product.name }}</div>
+                    <div><strong>Price:</strong> Rp {{ item.product.price }}</div>
+                    <p><strong>Stok:</strong> {{ item.stock }}</p>
+                    <img src="{{ item.product.img.url }}" alt="{{ item.product.name }}">
+                </div>
+                <div class="action-buttons">
+                    <!-- Edit button -->
+                    <a href="{% url 'product_edit' item.product.pk %}">Edit</a>
+                    <!-- Delete button with confirmation prompt -->
+                    <a href="{% url 'product_delete' item.product.pk %}" class="delete" onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
+                    <!-- Update Stock button -->
+                    <a href="{% url 'update_stock' item.product.pk %}">Update Stock</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,161 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Summary - Oey Alycia Resto & Cafe</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="icon" href="{% static 'images/resto_icon.png' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,300;0,400;0,700&display=swap" rel="stylesheet">
+    <style>
+        body.custom-body {
+            background: url("{% static 'images/header-bg.jpeg' %}");
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+        }
+
+        .custom-navbar {
+            background-color: #fff;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .custom-navbar .navbar-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .custom-navbar .navbar-nav a {
+            font-size: 1.1rem;
+            margin: 0 15px;
+            text-decoration: none;
+            color: #333;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+        }
+
+        .custom-navbar .navbar-nav a:hover {
+            color: #fda085;
+        }
+
+        .top-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .add-button, .settings-button {
+            background-color: #fda085;
+            color: #fff;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .add-button:hover, .settings-button:hover {
+            background-color: #f6a364;
+            box-shadow: 0 6px 8px rgba(246, 163, 100, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .custom-container {
+            margin-top: 90px;
+        }
+
+        .product-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.2s ease;
+            text-align: center;
+        }
+
+        .product-card:hover {
+            transform: scale(1.02);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .product-card h5 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            margin: 15px 0;
+        }
+
+        .product-card p {
+            font-size: 1rem;
+            color: #555;
+        }
+    </style>
+</head>
+<body class="custom-body">
+    <!-- Navbar start -->
+    <nav class="custom-navbar">
+        <a href="{% url 'home' %}" class="navbar-logo">
+            Oey Alycia <span>Resto & Cafe</span>
+        </a>
+
+        <div class="navbar-nav">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="#about">Tentang Kami</a>
+            <a href="#products">Produk</a>
+            <a href="{% url 'contact' %}">Kontak</a>
+        </div>
+    </nav>
+    <!-- Navbar end -->
+
+    <div class="container custom-container">
+        <div class="top-buttons">
+            {% if user.is_staff %}
+                <a href="{% url 'product_add' %}" class="add-button">Tambah Produk</a>
+                <a href="{% url 'product_setting' %}" class="settings-button">Setting Produk</a>
+            {% endif %}
+        </div>
+        <h1 class="text-center">Daftar Produk</h1>
+        <div class="row mt-4">
+            {% if products %}
+                {% for product in products %}
+                    <div class="col-md-4 mb-4">
+                        <div class="product-card">
+                            <img src="{{ product.img.url }}" alt="{{ product.name }}">
+                            <div class="p-3">
+                                <h5>{{ product.name }}</h5>
+                                <p><strong>Deskripsi:</strong> {{ product.description }}</p>
+                                <p><strong>Harga:</strong> Rp {{ product.price }}</p>
+                                <p><strong>Stok:</strong> {{ product.stock }}</p>
+
+                                {% if user.is_authenticated %}
+                                    <a href="{% url 'payment_order' product.id %}" class="btn btn-primary">Pesan</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-center">Tidak ada produk yang tersedia saat ini.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

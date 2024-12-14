@@ -1,0 +1,63 @@
+{% load static custom_filters %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details - Order #{{ order.id }}</title>
+    <link rel="stylesheet" href="{% static 'css/orders.css' %}?v={{ timestamp }}">  <!-- Include your CSS -->
+</head>
+<body>
+    <header>
+        <h1>Order Details</h1>
+    </header>
+
+    <main>
+        <section class="order-summary">
+            <h2>Order Summary</h2>
+            <p><strong>Order ID:</strong> {{ order.id }}</p>
+            <p><strong>User:</strong> {{ order.user.username }}</p>
+            <p><strong>Status Pesanan:</strong> {{ order.status }}</p>
+            <p><strong>Total Price:</strong> {{ order.total_price|rupiah }}</p>
+            <p><strong>Created At:</strong> {{ order.created_at|date:"M d, Y H:i" }}</p>
+        </section>
+
+        <section class="order-items">
+            <h2>Items</h2>
+            {% if order.items.exists %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items.all %}
+                        <tr>
+                            <td>{{ item.product.name }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>{{ item.price|rupiah }}</td>
+                            <td>{{ item.quantity|multiply:item.price|rupiah }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No items in this order.</p>
+            {% endif %}
+        </section>
+
+        <section class="actions">
+            <a href="{% url 'order_list' %}" class="button">Back to Orders</a>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Oey Alycia Resto & Cafe</p>
+    </footer>
+</body>
+</html>
