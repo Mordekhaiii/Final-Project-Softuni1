@@ -91,37 +91,6 @@ def product_edit(request, id):
     return render(request, 'orders/product_edit.html', {'form': form, 'product': product})
 
 
-
-
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect
-from .models import Product
-
-@user_passes_test(is_admin)
-def update_stock(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-
-    if request.method == 'POST':
-        if 'increase' in request.POST:
-            product.stock += 1  # Increase stock by 1
-        elif 'decrease' in request.POST:
-            if product.stock > 0:
-                product.stock -= 1  # Decrease stock by 1 if stock is greater than 0
-            else:
-                error_message = "Stock cannot be negative."
-                return render(request, 'orders/update_stock.html', {'product': product, 'error_message': error_message})
-
-        product.save()
-        return HttpResponseRedirect(reverse('product_summary', args=[product.pk]))  # Redirect back to product summary page
-
-    return render(request, 'orders/update_stock.html', {'product': product})
-# Stock
-from django.db.models import Q
-
-def product_summary(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    return render(request, 'orders/product_summary.html', {'product': product})
-
 @user_passes_test(is_admin)
 def product_delete(request, pk):
     product = get_object_or_404(Product, pk=pk)
@@ -155,10 +124,6 @@ def checkout(request):
                 price=product.price,
             )
             total_price += product.price * quantity
-
-            # Update stok produk
-            product.stock -= quantity
-            product.save()
 
         order.total_price = total_price
         order.save()

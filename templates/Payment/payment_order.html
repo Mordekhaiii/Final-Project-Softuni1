@@ -1,184 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Payment Order</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f3f4f6;
-            color: #333;
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f3f4f6;
+        color: #333;
+      }
+
+      h1 {
+        text-align: center;
+        margin: 20px 0;
+        color: var(--primary);
+        font-size: 2rem;
+        font-weight: bold;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .table {
+        width: 100%;
+        margin: 20px 0;
+        border-collapse: collapse;
+      }
+
+      .table th,
+      .table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: center;
+      }
+
+      .table th {
+        background-color: #28a745;
+        color: #fff;
+      }
+
+      .table tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+
+      .table-responsive {
+        overflow-x: auto;
+      }
+
+      .d-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .my-4 {
+        margin: 20px 0;
+      }
+
+      .text-success {
+        color: #28a745;
+        font-weight: bold;
+      }
+
+      label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      .form-select,
+      .btn {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .form-select:focus,
+      .btn:focus {
+        outline: none;
+        border-color: #28a745;
+        box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+      }
+
+      .btn {
+        background-color: #28a745;
+        color: #fff;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .btn:hover {
+        background-color: #218838;
+      }
+
+      .btn-back {
+        background-color: #6c757d;
+      }
+
+      .btn-back:hover {
+        background-color: #5a6268;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 15px;
         }
 
         h1 {
-            text-align: center;
-            margin: 20px 0;
-            color: var(--primary);
-            font-size: 2rem;
-            font-weight: bold;
+          font-size: 1.5rem;
         }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .table {
-            width: 100%;
-            margin: 20px 0;
-            border-collapse: collapse;
-        }
-
-        .table th, .table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-        }
-
-        .table th {
-            background-color: #28a745;
-            color: #fff;
-        }
-
-        .table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-        }
-
-        .d-flex {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .my-4 {
-            margin: 20px 0;
-        }
-
-        .text-success {
-            color: #28a745;
-            font-weight: bold;
-        }
-
-        label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        .form-select, .btn {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-select:focus, .btn:focus {
-            outline: none;
-            border-color: #28a745;
-            box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
-        }
-
-        .btn {
-            background-color: #28a745;
-            color: #fff;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn:hover {
-            background-color: #218838;
-        }
-
-        .btn-back {
-            background-color: #6c757d;
-        }
-
-        .btn-back:hover {
-            background-color: #5a6268;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-
-            h1 {
-                font-size: 1.5rem;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1>Checkout - Payment Order</h1>
-        <form method="post" action="{% url 'payment_order' order.id %}">
-    {% csrf_token %}
-    <div class="table-responsive">
-        <table class="table">
+      <h1>Checkout - Payment Order</h1>
+      <form method="post" action="{% url 'payment_order' product.id %}">
+        {% csrf_token %}
+        <div class="table-responsive">
+          <table class="table">
             <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Product Name</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Total Price</th>
-                    <th>Date</th>
-                </tr>
+              <tr>
+                <th>No</th>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total Price</th>
+                <th>Date</th>
+              </tr>
             </thead>
             <tbody>
-    {% for item in order.items.all %}
-    <tr>
-        <td>{{ forloop.counter }}</td>
-        <td>{{ item.product.name }}</td>
-        <td>{{ item.quantity }}</td>
-        <td>Rp{{ item.product.price|floatformat:0 }}</td>
-        <td>Rp{{ item.price|floatformat:0 }}</td>
-        <td>{{ item.order.created_at|date:"Y-m-d H:i" }}</td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="6" class="text-center">No data available</td>
-    </tr>
-    {% endfor %}
-</tbody>
-        </table>
-    </div>
+              {% for item in order.items.all %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>Rp{{ item.product.price|floatformat:0 }}</td>
+                <td>Rp{{ item.price|floatformat:0 }}</td>
+                <td>{{ item.order.created_at|date:"Y-m-d H:i" }}</td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="6" class="text-center">No data available</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
 
-    <div class="d-flex my-4">
-        <h5>Total Harga Keseluruhan:</h5>
-        <h5 class="text-success">Rp{{ total_price|floatformat:0 }}</h5>
-    </div>
+        <div class="d-flex my-4">
+          <h5>Total Harga Keseluruhan:</h5>
+          <h5 class="text-success">Rp{{ total_price|floatformat:0 }}</h5>
+        </div>
 
-    <div class="mb-3">
-        <label for="payment_method">Metode Pembayaran:</label>
-        <select name="payment_method" id="payment_method" class="form-select" required>
+        <div class="mb-3">
+          <label for="payment_method">Metode Pembayaran:</label>
+          <select
+            name="payment_method"
+            id="payment_method"
+            class="form-select"
+            required
+          >
             <option value="" disabled selected>Pilih Metode Pembayaran</option>
             <option value="Cash">Cash</option>
             <option value="Dompet Digital">QRIS</option>
-        </select>
-    </div>
+          </select>
+        </div>
 
-    <div class="d-flex">
-        <button type="submit" class="btn">Selesaikan Pesanan</button>
-        <button type="button" class="btn btn-back" onclick="window.history.back()">Kembali</button>
+        <div class="d-flex">
+          <button type="submit" class="btn">Selesaikan Pesanan</button>
+          <button
+            type="button"
+            class="btn btn-back"
+            onclick="window.history.back()"
+          >
+            Kembali
+          </button>
+        </div>
+      </form>
     </div>
-</form>
-
-    </div>
-</body>
+  </body>
 </html>
