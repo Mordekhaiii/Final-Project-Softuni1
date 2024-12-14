@@ -6,88 +6,128 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Payment List</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
-    />
     <style>
-      .back-button {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        background-color: #ff7f50;
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f3f4f6;
+        color: #333;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 2rem;
+        color: #28a745;
+        font-weight: bold;
+      }
+
+      .table {
+        width: 100%;
+        margin: 20px 0;
+        border-collapse: collapse;
+      }
+
+      .table th,
+      .table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: center;
+      }
+
+      .table th {
+        background-color: #28a745;
         color: #fff;
-        text-decoration: none;
-        padding: 10px 20px;
-        border-radius: 5px;
+      }
+
+      .table tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 8px 12px;
         font-size: 14px;
-        font-weight: bold;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        transition: all 0.3s ease;
         border: none;
+        border-radius: 4px;
         cursor: pointer;
+        transition: background-color 0.3s ease;
       }
 
-      .back-button:hover {
-        background-color: #ff4500;
-        box-shadow: 0 6px 8px rgba(255, 69, 0, 0.3);
-        transform: translateY(-2px);
+      .btn-warning {
+        background-color: #ffc107;
+        color: #212529;
       }
 
-      .table-container {
-        margin-top: 50px;
+      .btn-warning:hover {
+        background-color: #e0a800;
       }
 
-      .no-payments {
-        margin-top: 20px;
-        font-size: 18px;
-        color: #6c757d;
+      .btn-danger {
+        background-color: #dc3545;
+        color: #fff;
       }
 
-      .total-payment {
-        margin-top: 20px;
-        font-weight: bold;
-        font-size: 20px;
+      .btn-danger:hover {
+        background-color: #c82333;
       }
 
-      .payment-form {
-        margin-top: 30px;
+      .btn-back {
+        background-color: #6c757d;
+        color: #fff;
+        margin-right: 10px;
+      }
+
+      .btn-back:hover {
+        background-color: #5a6268;
       }
 
       .confirm-payment-button {
-        background-color: #007bff;
+        background-color: #28a745;
         color: #fff;
+        font-size: 16px;
         font-weight: bold;
-        border-radius: 5px;
         padding: 10px 20px;
-        text-decoration: none;
-        display: inline-block;
-        transition: all 0.3s ease;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
       }
 
       .confirm-payment-button:hover {
-        background-color: #0056b3;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 6px rgba(0, 0, 255, 0.3);
+        background-color: #218838;
+      }
+
+      .total-payment {
+        font-weight: bold;
+        text-align: right;
+        margin-top: 20px;
+        font-size: 1.2rem;
+        color: #28a745;
       }
     </style>
   </head>
   <body>
-    <div class="container mt-5">
-      <a href="{% url 'home' %}" class="back-button">Back to Home</a>
-      <h1 class="text-center mb-4">Payment List</h1>
-
+    <div class="container">
+      <h1>Payment List</h1>
       {% if payments %}
-      <div class="table-container">
-        <table class="table table-striped table-hover">
-          <thead class="table-dark">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
             <tr>
-              <th>#</th>
+              <th>No</th>
               <th>Product Name</th>
               <th>Quantity</th>
               <th>Price</th>
               <th>Total Price</th>
-              <th>Date</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -97,18 +137,19 @@
               <td>{{ forloop.counter }}</td>
               <td>{{ payment.product.name }}</td>
               <td>{{ payment.quantity }}</td>
-              <td>${{ payment.price }}</td>
-              <td>${{ payment.quantity|multiply:payment.price }}</td>
-              <td>{{ payment.order.created_at|date:"d M Y H:i" }}</td>
+              <td>Rp{{ payment.product.price|floatformat:0 }}</td>
+                <td>Rp{{ payment.quantity|multiply:payment.product.price|floatformat:0 }}</td>
               <td>
-                <div class="btn-group" role="group" aria-label="Payment Actions">
+                <div class="btn-group">
+                  <!-- Button Decrease -->
                   <form action="{% url 'decrease_quantity' payment.id %}" method="post" style="display: inline">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-warning btn-sm">Decrease</button>
+                    <button type="submit" class="btn btn-warning">Decrease</button>
                   </form>
+                  <!-- Button Delete -->
                   <form action="{% url 'delete_payment' payment.id %}" method="post" style="display: inline">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    <button type="submit" class="btn btn-danger">Delete</button>
                   </form>
                 </div>
               </td>
@@ -117,37 +158,28 @@
           </tbody>
         </table>
       </div>
-      <p class="total-payment">Total Payment: ${{ total_payment }}</p>
-      
-      <!-- Formulir Pembayaran -->
-      <div class="payment-form">
-        <form action="{% url 'payment_order' %}" method="post">
-          {% csrf_token %}
-          <div class="mb-3">
-            <label for="paymentMethod" class="form-label">Payment Method</label>
-            <select class="form-select" id="paymentMethod" name="payment_method" required>
-              <option value="">Choose...</option>
-              <option value="credit_card">Credit Card</option>
-              <option value="bank_transfer">Bank Transfer</option>
-              <option value="paypal">PayPal</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="accountNumber" class="form-label">Account/Card Number</label>
-            <input type="text" class="form-control" id="accountNumber" name="account_number" placeholder="Enter your account or card number" required />
-          </div>
-          <button type="submit" class="confirm-payment-button">Confirm Payment</button>
-        </form>
-      </div>
-      {% else %}
-      <p class="no-payments text-center">No payments available.</p>
-      {% endif %}
+      <p class="total-payment">Total Payment: Rp{{ total_payment|floatformat:0 }}</p>
 
-      <div class="text-center mt-4">
-        <a href="{% url 'product_list' %}" class="btn btn-primary">Back to Product List</a>
+      <!-- Payment Form -->
+      <form method="post" action="{% url 'complete_order' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="payment_method">Payment Method:</label>
+          <select name="payment_method" id="payment_method" class="form-select" required>
+            <option value="" disabled selected>Pilih Metode Pembayaran</option>
+            <option value="Cash">Cash</option>
+            <option value="Dompet Digital">QRIS</option>
+          </select>
+        </div>
+        <button type="submit" class="confirm-payment-button">Confirm Payment</button>
+      </form>
+      {% else %}
+      <p class="text-center">No payments available.</p>
+      {% endif %}
+      <div class="d-flex mt-3">
+        <button class="btn btn-back" onclick="window.history.back()">Back</button>
+        <a href="{% url 'product_list' %}" class="btn btn-primary">Back to Products</a>
       </div>
     </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js"></script>
   </body>
 </html>

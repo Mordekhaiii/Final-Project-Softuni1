@@ -5,34 +5,41 @@ from .models import TransactionHistory
 from Payment.models import Payment
 from .models import Product
 from orders.models import Order
-
+from django.contrib import messages
 
 @login_required
 def complete_order(request):
+    # Ambil semua payment terkait pengguna
     payments = Payment.objects.filter(user=request.user)
 
     if payments.exists():
         try:
-            with transaction.atomic():
-                # Pindahkan data dari Payment ke TransactionHistory
+            with transaction.atomic():  # Pastikan semua operasi dilakukan secara atomik
                 for payment in payments:
+                    # Pindahkan data ke TransactionHistory
                     TransactionHistory.objects.create(
                         date=payment.date,
                         user=payment.user,
-                        perfume=payment.product,
+                        perfume=payment.product,  # Pastikan field sesuai model TransactionHistory
                         quantity=payment.quantity,
                         total_price=payment.total_price,
                     )
 
-                    # Tambahkan logika untuk menghapus data di Payment
+                    # Hapus data dari Payment setelah disimpan di TransactionHistory
                     payment.delete()
-        except Exception as e:
-            return redirect('payment_list')  # Jika terjadi kesalahan, kembali ke daftar pembayaran
 
-    return redirect('transaction_history')  # Alihkan ke halaman riwayat transaksi
+                # Tambahkan pesan sukses
+                messages.success(request, "Payment completed and moved to transaction history.")
+        except Exception as e:
+            # Jika ada error, tampilkan pesan dan kembali ke halaman payment_list
+            messages.error(request, f"An error occurred: {str(e)}")
+            return redirect('payment_list')
+
+    # Redirect ke halaman riwayat transaksi setelah berhasil
+    return redirect('transaction_history')
 
 
 @login_required
 def transaction_history(request):
     transactions = TransactionHistory.objects.filter(user=request.user).order_by('-id')
-    return render(request, 'orders/order_detail.html', {'transactions': transactions})
+    return render(request, 'riwayat_transaksi/transaction_history.html', {'transactions': transactions})

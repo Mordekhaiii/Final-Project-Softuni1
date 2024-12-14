@@ -22,13 +22,10 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 
 import logging
 logger = logging.getLogger(__name__)
-@login_required
-def product_list(request):
-    products = Product.objects.all()
-    for product in products:
-        logger.debug(f"Product Image: {product.img.url}")
-    return render(request, 'orders/product_list_crud.html', {'products': products})
 
+def product_list(request):
+    products = Product.objects.filter(is_available=True)
+    return render(request, 'orders/product_list_crud.html', {'products': products})
 
 def product_setting(request):
     # Handle form submission
@@ -167,10 +164,24 @@ def order_detail_view(request, order_id):
 
 
 # Alur dari payment_order ke user_order_views
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from .models import Order
+
 @login_required
 def user_orders_view(request):
     orders = Order.objects.filter(user=request.user).order_by('-created_at')  # Fetch orders for the logged-in user
+    
+    for order in orders:
+        # Check if the order has an associated payment and update the payment status
+        if order.payments.exists():  # If payments exist for this order
+            payment = order.payments.first()  # Get the most recent payment
+            order.payment_status = payment.status
+        else:
+            order.payment_status = 'Pending'  # If no payment exists
+
     return render(request, 'orders/orders.html', {'orders': orders})
+
 # Alur End
 
 def product_list_view(request):
