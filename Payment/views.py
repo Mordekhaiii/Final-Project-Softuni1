@@ -1,118 +1,138 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Payment, Product
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-from django.contrib import messages
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db import transaction
-from .forms import PaymentForm  # Impor PaymentForm
-from .models import Product, Payment
-from orders.models import Order
-
-
-from django.views.decorators.http import require_POST
-from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Payment
+from orders.models import Product  # Import Product model
+from Payment.models import Payment
 
 @login_required
-def decrease_quantity(request, payment_id):
-    # Dapatkan instance pembayaran
+def delete_payment(request, payment_id):
     payment = get_object_or_404(Payment, id=payment_id, user=request.user)
 
-    # Kurangi kuantitas jika > 1, jika tidak hapus
-    if payment.quantity > 1:
-        payment.quantity -= 1
-        payment.save()
-    else:
-        payment.delete()
+    try:
+        with transaction.atomic():
 
-    # Redirect kembali ke halaman Payment List
+            # Get the related product
+            product = payment.product
+            product.stock += payment.quantity  # Restore stock
+            product.is_available = True  # Mark the product as available
+            product.save()
+
+            # Delete the payment
+            payment.delete()
+
+    except Exception as e:
+        print(f"Error: {e}")
+        pass  # Handle exception (if any)
+
     return redirect('payment_list')
 
 
-from django.shortcuts import get_object_or_404, redirect
-from .models import Payment
-@login_required
-@require_POST
-def delete_payment(request, payment_id):
-    payment = get_object_or_404(Payment, pk=payment_id)
-    payment.delete()
-    return redirect('payment_list')  # Adjust to the appropriate redirect
-
-
-
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
-from django.contrib import messages
+from django.db import transaction
 from django.contrib.auth.decorators import login_required
-from orders.models import Product, Order, OrderItem
+from orders.models import Product  # Import Product model
+from Payment.models import Payment
+
+@login_required
+def decrease_quantity(request, payment_id):
+    payment = get_object_or_404(Payment, id=payment_id, user=request.user)
+
+    try:
+        with transaction.atomic():
+            if payment.quantity > 1:  # Ensure the quantity is greater than 1 before decreasing
+                payment.quantity -= 1  # Decrease quantity
+                payment.total_price = payment.quantity * payment.product.price  # Recalculate total price
+                payment.save()
+
+                # Get the related product
+                product = payment.product
+                product.stock += 1  # Restore stock by 1
+                product.is_available = True  # Mark product as available
+                product.save()
+
+    except Exception as e:
+        print(f"Error: {e}")
+        pass  # Handle exception (if any)
+
+    return redirect('payment_list')
+
 
 @login_required
 def payment_list(request):
     payments = Payment.objects.filter(user=request.user)
     total_payment = sum(payment.total_price for payment in payments)
+
+    if request.method == 'POST':
+        payment_method = request.POST.get('payment_method')
+        
+        if not payment_method:
+            messages.error(request, "Silakan pilih metode pembayaran")
+            return redirect('payment_list')
+            
+        try:
+            with transaction.atomic():
+                for payment in payments:
+                    # Buat record baru di TransactionHistory
+                    TransactionHistory.objects.create(
+                        user=payment.user,
+                        product=payment.product,
+                        quantity=payment.quantity,
+                        total_price=payment.total_price,
+                        payment_method=payment_method,
+                        created_at=now()  # Menggunakan created_at dari model baru
+                    )
+                    # Hapus payment yang sudah diproses
+                    payment.delete()
+                
+                messages.success(request, "Pembayaran berhasil dan telah ditambahkan ke riwayat transaksi.")
+                return redirect('transaction_history')
+                
+        except Exception as e:
+            messages.error(request, f"Terjadi kesalahan: {e}")
+    
     return render(request, 'payment/payment_list.html', {
         'payments': payments,
         'total_payment': total_payment,
     })
-
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponseRedirect
 from orders.models import Product, Order, OrderItem
 from django.contrib.auth.decorators import login_required
 
+
 @login_required
-def payment_order(request, order_id):
+def payment_order(request, product_id):
     try:
         # Get the product from the database
-        product = get_object_or_404(Product, id=order_id)
-
-        # Ensure only one pending order exists for the user
-        orders = Order.objects.filter(user=request.user, status='pending')
-        if orders.exists():
-            order = orders.first()  # Get the first order if multiple exist
-            if orders.count() > 1:
-                # Remove duplicates and keep only one
-                orders.exclude(id=order.id).delete()
-        else:
-            # Create a new order if none exists
-            order = Order.objects.create(user=request.user, status='pending')
+        product = get_object_or_404(Product, id=product_id)
 
         # Get the quantity from the query parameters (default to 1)
         quantity = int(request.GET.get('quantity', 1))
 
         # Check stock availability
         if product.stock < quantity:
-            return JsonResponse({
-                'status': 'error',
-                'message': 'Not enough stock available'
-            }, status=400)
+            messages.error(request, 'Not enough stock available')
+            return redirect('product_list')
 
-        # Check if the product is already in the order
-        order_item, created = OrderItem.objects.get_or_create(
-            order=order,
+        # Create payment record
+        payment = Payment.objects.create(
+            user=request.user,
             product=product,
-            defaults={'quantity': quantity, 'price': product.price}
+            quantity=quantity,
+            total_price=quantity * product.price
         )
-        if not created:
-            # If it already exists, update the quantity
-            order_item.quantity += quantity
-            order_item.save()
 
         # Update the product stock
         product.stock -= quantity
         product.save()
 
-        # Redirect to the payment page
-        return redirect('payment_order', product_id=product.id)  # Ganti 'payment:checkout' dengan nama URL Anda
+        return redirect('payment_list')
 
     except Exception as e:
-        return JsonResponse({
-            'status': 'error',
-            'message': f'Error adding product to order: {str(e)}'
-        }, status=500)
-
+        messages.error(request, f'Error processing payment: {str(e)}')
+        return redirect('product_list')
+    
 # Add to payment
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required

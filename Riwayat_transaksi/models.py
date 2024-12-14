@@ -1,15 +1,22 @@
 from django.db import models
 from django.contrib.auth.models import User
-from orders.models import Product
+from orders.models import Product  # Updated to Product model
 from django.utils.timezone import now
-from django.core.validators import MinValueValidator
 
 class TransactionHistory(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="transactions")
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="transactions")
-    quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)], help_text="Quantity must be at least 1")
-    total_price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Total price of the transaction")
-    created_at = models.DateTimeField(default=now)
+    PAYMENT_METHOD_CHOICES = [
+        ('Cash', 'Cash'),
+        ('Credit', 'Credit'),
+        ('Dompet Digital', 'Dompet Digital'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    payment_method = models.CharField(
+    max_length=50, choices=PAYMENT_METHOD_CHOICES, default='Cash')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)  # Changed from Perfume to Product
+    quantity = models.PositiveIntegerField()
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    date = models.DateTimeField(default=now)
 
     def __str__(self):
-        return f"Transaction by {self.user.username} on {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
+        return f"Transaction by {self.user.username} on {self.date}"

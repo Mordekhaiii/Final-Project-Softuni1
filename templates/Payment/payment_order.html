@@ -129,7 +129,7 @@
   <body>
     <div class="container">
       <h1>Checkout - Payment Order</h1>
-      <form method="post" action="{% url 'payment_order' %}">
+      <form method="post" action="{% url 'payment_order' product.id %}">
         {% csrf_token %}
         <div class="table-responsive">
           <table class="table">
