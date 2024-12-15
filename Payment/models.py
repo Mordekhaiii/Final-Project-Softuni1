@@ -9,6 +9,11 @@ class Payment(models.Model):
         ('QRIS', 'QRIS'),
     ]
 
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('success', 'Success'),
+    ]
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -26,6 +31,18 @@ class Payment(models.Model):
         choices=PAYMENT_METHOD_CHOICES,
         default='Cash',
         verbose_name='Payment Method'
+    )
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default='pending',
+        verbose_name='Payment Status'
+    )
+    proof = models.ImageField(
+        upload_to='payment_proofs/',
+        blank=True,
+        null=True,
+        verbose_name='Payment Proof'
     )
     date = models.DateTimeField(auto_now_add=True, verbose_name='Payment Date')
 
@@ -48,7 +65,7 @@ class Payment(models.Model):
         ordering = ['-date']
 
     def __str__(self):
-        return f"Payment by {self.user.username} | {self.product.name} | Qty: {self.quantity} | Total: Rp{self.total_price} | {self.payment_method}"
+        return f"Payment by {self.user.username} | {self.product.name} | Qty: {self.quantity} | Total: Rp{self.total_price} | {self.payment_method} | Status: {self.status}"
 
 
 # Signals to handle stock changes
@@ -64,3 +81,23 @@ def reduce_stock_on_payment_save(sender, instance, **kwargs):
 def restore_stock_on_payment_delete(sender, instance, **kwargs):
     instance.product.stock += instance.quantity
     instance.product.save()
+
+class PaymentProof(models.Model):
+    payment = models.OneToOneField(
+        Payment,
+        on_delete=models.CASCADE,
+        related_name='payment_proof',
+        verbose_name='Payment'
+    )
+    proof = models.ImageField(
+        upload_to='payment_proof/',
+        verbose_name='Proof of Payment'
+    )
+    uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name='Uploaded At')
+
+    class Meta:
+        verbose_name_plural = "Payment Proof"
+        ordering = ['-uploaded_at']
+
+    def __str__(self):
+        return f"Proof for Payment ID {self.payment.id}"

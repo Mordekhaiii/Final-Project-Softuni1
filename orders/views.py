@@ -2,11 +2,12 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from Payment.models import Payment
 from django.contrib.auth.decorators import login_required
-from orders.models import Product
+from halaman.models import UserProfile
+# from orders.models import Product
 from django.db import transaction
 from django.http import HttpResponseBadRequest
 
-from .models import Order, OrderItem, Product
+# from .models import Order, OrderItem, Product
 from django.http import JsonResponse
 import json
 
@@ -23,9 +24,6 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 import logging
 logger = logging.getLogger(__name__)
 
-def product_list(request):
-    products = Product.objects.filter(is_available=True)
-    return render(request, 'orders/product_list_crud.html', {'products': products})
 
 def product_setting(request):
     # Handle form submission
@@ -97,90 +95,53 @@ def product_delete(request, pk):
         return redirect('product_list')
     return render(request, 'orders/product_confirm_delete.html', {'product': product})
 
-
-# Checkout
-@login_required
-def checkout(request):
-    if request.method == 'POST':
-        # Simpan data pesanan
-        user = request.user
-        items = request.session.get('cart', {})  # Ambil data dari session (contoh keranjang belanja)
-        if not items:
-            messages.error(request, 'Your cart is empty.')
-            return redirect('cart')
-
-        order = Order.objects.create(user=user, status='Pending')
-        total_price = 0
-
-        for product_id, quantity in items.items():
-            product = get_object_or_404(Product, id=product_id)
-            order_item = OrderItem.objects.create(
-                order=order,
-                product=product,
-                quantity=quantity,
-                price=product.price,
-            )
-            total_price += product.price * quantity
-
-        order.total_price = total_price
-        order.save()
-
-        # Hapus keranjang setelah checkout
-        del request.session['cart']
-
-        messages.success(request, 'Your order has been placed successfully.')
-        return redirect('order_history')
-
-    return render(request, 'orders/checkout.html')
-# Checkout
-
 # History
 
 
 
 # Order Detail
 from django.shortcuts import render, get_object_or_404
-from .models import Order
+# from .models import Order
 
 
-@login_required
-def order_detail(request, order_id):
-    try:
-        # Ambil detail pesanan berdasarkan ID
-        order = Order.objects.get(id=order_id, user=request.user)
-        order_items = OrderItem.objects.filter(order=order)
+# @login_required
+# def order_detail(request, order_id):
+#     try:
+#         # Ambil detail pesanan berdasarkan ID
+#         order = Order.objects.get(id=order_id, user=request.user)
+#         order_items = OrderItem.objects.filter(order=order)
 
-        # Kirim data ke template untuk ditampilkan
-        return render(request, 'orders/order_detail.html', {
-            'order': order,
-            'order_items': order_items,
-        })
-    except Order.DoesNotExist:
-        return render(request, '404.html', {'message': 'Order not found'}, status=404)
+#         # Kirim data ke template untuk ditampilkan
+#         return render(request, 'orders/order_detail.html', {
+#             'order': order,
+#             'order_items': order_items,
+#         })
+#     except Order.DoesNotExist:
+#         return render(request, '404.html', {'message': 'Order not found'}, status=404)
 
-def order_detail_view(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-    return render(request, 'orders/order_detail.html', {'order': order})
+# def order_detail_view(request, order_id):
+#     order = get_object_or_404(Order, id=order_id)
+#     return render(request, 'orders/order_detail.html', {'order': order})
 
 
 # Alur dari payment_order ke user_order_views
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .models import Order
+# from .models import Order
 
-@login_required
-def user_orders_view(request):
-    orders = Order.objects.filter(user=request.user).order_by('-created_at')  # Fetch orders for the logged-in user
+# @login_required
+# def user_orders_view(request):
+#     orders = Order.objects.filter(user=request.user).order_by('-created_at')  # Fetch orders for the logged-in user
     
-    for order in orders:
-        # Check if the order has an associated payment and update the payment status
-        if order.payments.exists():  # If payments exist for this order
-            payment = order.payments.first()  # Get the most recent payment
-            order.payment_status = payment.status
-        else:
-            order.payment_status = 'Pending'  # If no payment exists
+#     for order in orders:
+#         # Check if the order has an associated payment and update the payment status
+#         if order.payments.exists():  # If payments exist for this order
+#             payment = order.payments.first()  # Get the most recent payment
+#             order.payment_status = payment.status
+#         else:
+#             order.payment_status = 'Pending'  # If no payment exists
 
-    return render(request, 'orders/orders.html', {'orders': orders})
+#     return render(request, 'orders/orders.html', {'orders': orders})
 
 # Alur End
 
@@ -189,21 +150,55 @@ def product_list_view(request):
     return render(request, 'orders/product_list.html', {'products': products})
 
 # Order List
-@login_required
-def order_list_view(request):
-    orders = Order.objects.filter(user=request.user)
-    return render(request, 'orders/order_list.html', {'orders': orders})
-# Order List End
+# @login_required
+# def order_list_view(request):
+#     orders = Order.objects.filter(user=request.user)
+#     return render(request, 'orders/order_list.html', {'orders': orders})
+# # Order List End
 
 # Home Start
+@login_required
 def home(request):
-    try:
-        order = get_object_or_404(Order, user=request.user)  # Adjust as necessary
-        print(f"Order ID: {order.id}")  # Debugging line
-    except Exception as e:
-        print(f"Error: {e}")  # Print any errors
-        order = None  # Set order to None if there's an error
-    return render(request, 'home.html', {'order': order})
+    return render(request, 'home.html', {
+        'user': request.user,
+    })
 
+
+logger = logging.getLogger(__name__)
+# Create your views here.
+def home(request):
+    logger.info("Home view accessed")
+    return render(request, 'home.html')
 
 # Home End
+
+# Profile 
+from halaman.models import UserProfile
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from .models import Product
+def profilePage(request):
+    if not request.user.is_authenticated:
+        messages.info(request, "You need to log in to view your profile.")
+        return redirect('login')
+
+    # Ambil profil pengguna yang sedang login (dari UserProfile)
+    profile = UserProfile.objects.filter(user=request.user).first()
+
+    context = {
+        'user': request.user,
+        'profile': profile  # Tambahkan profil pengguna ke context
+    }
+    return render(request, 'accounts/profile.html', context)
+
+def logoutUser(request):
+    logout(request)
+    messages.success(request, "You have successfully logged out.")
+    return redirect('home')
+
+
+
+def product_list(request):
+    products = Product.objects.filter(is_available=True)
+    return render(request, 'orders/product_list_crud.html', {'products': products})

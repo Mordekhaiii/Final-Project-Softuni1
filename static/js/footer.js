@@ -1,16 +1,16 @@
 // Footer Semua Halaman
-  const footer = document.getElementById("footer");
-  footer.innerHTML = showFooter();
+const footer = document.getElementById("footer");
+footer.innerHTML = showFooter();
 
-  function showFooter() {
-    return `<div class="container-fluid footer">
+function showFooter() {
+  return `<div class="container-fluid footer">
             <div class="row justify-content-center">
               <div class="col-12 text-center footer-content">
                 <div class="footer-title">
                   <h1 class="fw-bold">Oey<span>Alycia</span> Resto &<span>Cafe.</span></h1>
                   <ul class="list-unstyled text-uppercase">
                     <li>Open from 10:00 AM - 10:00 PM</li>
-                    <li class="mb-3">Bogor - Rancabungur</li>
+                    <li class="mb-3">Jl. Raya Rancabungur No.1, Kec. Ranca Bungur, Kabupaten Bogor, Jawa Barat 16310</li>
                   </ul>
                   <span class="me-3">
                     <!-- Instagram icon using Feather -->
@@ -31,5 +31,4 @@
               </p>
             </div>
           </div>`;
-
-  }
+}

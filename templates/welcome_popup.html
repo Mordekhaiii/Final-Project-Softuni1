@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popup Welcome</title>
+    <style>
+        /* Full-screen overlay */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        /* Pop-up box */
+        .popup-box {
+            background: #fff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            width: 400px;
+        }
+
+        /* Close button */
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        /* Image & text styling */
+        .popup-title {
+            font-weight: bold;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .popup-content {
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <!-- Overlay and Popup -->
+    <div class="popup-overlay" id="welcomePopup">
+        <div class="popup-box">
+            <span class="popup-close" onclick="closePopup()">X</span>
+            <div class="popup-title">HALO TETANGGA TUKU!</div>
+            <div class="popup-content">
+                <p>Beribu cerita baik yang terukir sampai hari ini, ada bekal semangat dan nyali yang dipinjam...</p>
+                <p>Dari mulai angan, kita upayakan. Hingga sekarang, satu per satu mimpi itu jadi nyata.</p>
+                <p>Berkat gotong royong, doa, dan asa yang diberikan oleh <b>#TetanggaTuku</b>.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for closing the popup -->
+    <script>
+        function closePopup() {
+            document.getElementById('welcomePopup').style.display = 'none';
+        }
+
+        // Show popup on page load
+        window.onload = function() {
+            document.getElementById('welcomePopup').style.display = 'flex';
+        };
+    </script>
+</body>
+</html>

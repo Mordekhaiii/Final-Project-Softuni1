@@ -1,44 +1,82 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transaction History</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
-    />
-  </head>
-  <body>
+
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <!-- My CSS -->
+    <link rel="stylesheet" href="{% static 'css/transaction_history.css' %}"/>
+
+    <!-- AlpineJS -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.x.x/dist/alpine.min.js" defer></script>
+</head>
+<body>
     <div class="container mt-5">
-      <h1 class="text-center">Transaction History</h1>
-      {% if transactions %}
-      <table class="table table-striped mt-4">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Total Price</th>
-            <th>Payment Method</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for transaction in transactions %}
-          <tr>
-            <td>{{ transaction.date }}</td>
-            <td>{{ transaction.product.name }}</td>
-            <!-- Displaying product name -->
-            <td>{{ transaction.quantity }}</td>
-            <td>${{ transaction.total_price }}</td>
-            <td>{{ transaction.payment_method }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      {% else %}
-      <p class="text-center">No transactions found.</p>
-      {% endif %}
+        <h1 class="text-center">Transaction History</h1>
+        {% if transactions %}
+        <table class="table table-striped mt-4">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Date</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                    <th>Payment Method</th>
+                    <th>Payment Status</th>
+                    <th>Proof of Payment</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ transaction.date }}</td>
+                    <td>{{ transaction.product.name }}</td>
+                    <td>{{ transaction.quantity }}</td>
+                    <td>Rp{{ transaction.total_price|floatformat:0}}</td>
+                    <td>{{ transaction.payment_method }}</td>
+                    <td>
+                        {% if transaction.payment_status == "Completed" %}
+                            <span class="badge bg-success">Completed</span>
+                        {% else %}
+                            {% if transaction.payment_status == "Failed" %}
+                                <span class="badge bg-danger">Failed</span>
+                            {% else %}
+                                <span class="badge bg-warning">Pending</span>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if transaction.payment_method == "QRIS" %}
+                            {% if transaction.proof_of_payment %}
+                                <a href="{{ transaction.proof_of_payment.url }}" target="_blank" class="btn btn-info btn-sm">
+                                    Bukti Pembayaran 
+                                </a>
+                            {% else %}
+                                <span class="text-muted">No Proof Uploaded</span>
+                            {% endif %}
+                        {% else %}
+                            <span class="text-muted">Pembayaran Cash</span>
+                        {% endif %}
+                    </td>
+                    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-center">No transactions found.</p>
+        {% endif %}
+        <div class="d-flex mt-4">
+          <a href="{% url 'product_list' %}" class="btn btn-primary">Kembali ke Produk</a>
+        </div>                  
     </div>
-  </body>
+</body>
 </html>

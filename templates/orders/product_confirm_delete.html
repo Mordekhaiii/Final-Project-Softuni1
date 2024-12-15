@@ -1,7 +1,25 @@
-<h1>Delete Product</h1>
-<p>Are you sure you want to delete "{{ product.name }}"?</p>
-<form method="post">
-    {% csrf_token %}
-    <button type="submit">Yes</button>
-    <a href="{% url 'product_list' %}">No</a>
-</form>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menghapus Produk </title>
+    <link rel="stylesheet" href="{% static 'css/product_confirm_delete.css' %}?v={{ timestamp }}">
+</head>
+<body>
+    <div class="delete-container">
+        <h1>Delete Product</h1>
+        <p>Are you sure you want to delete "{{ product.name }}"?</p>
+        <div class="product-card">
+        <img src="{{ product.img.url }}" alt="{{ product.name }}" />
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit">Yes</button>
+            <a href="{% url 'product_list' %}">No</a>
+        </form>
+    </div>
+    </div>
+</body>
+</html>

@@ -5,181 +5,93 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Payment List</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f3f4f6;
-        color: #333;
-      }
-
-      .container {
-        max-width: 800px;
-        margin: 20px auto;
-        padding: 20px;
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      }
-
-      h1 {
-        text-align: center;
-        margin-bottom: 20px;
-        font-size: 2rem;
-        color: #28a745;
-        font-weight: bold;
-      }
-
-      .table {
-        width: 100%;
-        margin: 20px 0;
-        border-collapse: collapse;
-      }
-
-      .table th,
-      .table td {
-        border: 1px solid #ddd;
-        padding: 10px;
-        text-align: center;
-      }
-
-      .table th {
-        background-color: #28a745;
-        color: #fff;
-      }
-
-      .table tr:nth-child(even) {
-        background-color: #f9f9f9;
-      }
-
-      .btn {
-        display: inline-block;
-        padding: 8px 12px;
-        font-size: 14px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-      }
-
-      .btn-warning {
-        background-color: #ffc107;
-        color: #212529;
-      }
-
-      .btn-warning:hover {
-        background-color: #e0a800;
-      }
-
-      .btn-danger {
-        background-color: #dc3545;
-        color: #fff;
-      }
-
-      .btn-danger:hover {
-        background-color: #c82333;
-      }
-
-      .btn-back {
-        background-color: #6c757d;
-        color: #fff;
-        margin-right: 10px;
-      }
-
-      .btn-back:hover {
-        background-color: #5a6268;
-      }
-
-      .confirm-payment-button {
-        background-color: #28a745;
-        color: #fff;
-        font-size: 16px;
-        font-weight: bold;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-      }
-
-      .confirm-payment-button:hover {
-        background-color: #218838;
-      }
-
-      .total-payment {
-        font-weight: bold;
-        text-align: right;
-        margin-top: 20px;
-        font-size: 1.2rem;
-        color: #28a745;
-      }
-    </style>
+    <title>Daftar Pembayaran Product</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+    <link href="{% static "css/payment_list.css" %}" rel="stylesheet" />
   </head>
   <body>
     <div class="container">
-      <h1>Payment List</h1>
+      <h1>Daftar Pembayaran</h1>
       {% if payments %}
-      <div class="table-responsive">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>No</th>
-              <th>Product Name</th>
-              <th>Quantity</th>
-              <th>Price</th>
-              <th>Total Price</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for payment in payments %}
-            <tr>
-              <td>{{ forloop.counter }}</td>
-              <td>{{ payment.product.name }}</td>
-              <td>{{ payment.quantity }}</td>
-              <td>Rp{{ payment.product.price|floatformat:0 }}</td>
-                <td>Rp{{ payment.quantity|multiply:payment.product.price|floatformat:0 }}</td>
-              <td>
-                <div class="btn-group">
-                  <!-- Button Decrease -->
-                  <form action="{% url 'decrease_quantity' payment.id %}" method="post" style="display: inline">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-warning">Decrease</button>
-                  </form>
-                  <!-- Button Delete -->
-                  <form action="{% url 'delete_payment' payment.id %}" method="post" style="display: inline">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                  </form>
-                </div>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Nama Produk</th>
+            <th>Jumlah</th>
+            <th>Harga</th>
+            <th>Total Harga</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for payment in payments %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ payment.product.name }}</td>
+            <td>{{ payment.quantity }}</td>
+            <td>Rp{{ payment.product.price|floatformat:0 }}</td>
+            <td>Rp{{ payment.quantity|multiply:payment.product.price|floatformat:0 }}</td>
+            <td>
+              <form action="{% url 'decrease_quantity' payment.id %}" method="post" style="display: inline">
+                {% csrf_token %}
+                <button type="submit" class="btn-kurangi">Kurangi Produk</button>
+              </form>
+              <form action="{% url 'delete_payment' payment.id %}" method="post" style="display: inline">
+                {% csrf_token %}
+                <button type="submit" class="btn-hapus">Hapus Produk</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
       <p class="total-payment">Total Payment: Rp{{ total_payment|floatformat:0 }}</p>
 
-      <!-- Payment Form -->
-      <form method="post" action="{% url 'complete_order' %}">
+      <form method="post" action="{% url 'complete_order' %}" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="mb-3">
-          <label for="payment_method">Payment Method:</label>
-          <select name="payment_method" id="payment_method" class="form-select" required>
-            <option value="" disabled selected>Pilih Metode Pembayaran</option>
-            <option value="Cash">Cash</option>
-            <option value="Dompet Digital">QRIS</option>
-          </select>
+        <label for="payment_method">Metode Pembayaran:</label>
+        <select name="payment_method" id="payment_method" required>
+          <option value="" disabled selected>Silahkan Pilih Metode Pembayaran</option>
+          <option value="Cash">Cash</option>
+          <option value="QRIS">QRIS</option>
+        </select>
+
+        <div class="qris-container" id="qris-container">
+          <p class="qris-header">Scan QRIS untuk Melakukan Pembayaran</p>
+          <img src="{% static 'images/qris.jpg' %}" alt="QRIS Code" class="qris-image" />
+          <p class="qris-instructions">Gunakan aplikasi pembayaran untuk memindai kode QR.</p>
         </div>
-        <button type="submit" class="confirm-payment-button">Confirm Payment</button>
+
+        <div class="proof-container">
+          <label for="proof" class="proof-label">Upload Bukti Pembayaran:</label>
+          <input type="file" name="proof" class="proof-input" />
+        </div>
+
+        <button type="submit" class="confirm-payment-button">Konfirmasi Pembayaran</button>
       </form>
+
       {% else %}
-      <p class="text-center">No payments available.</p>
+      <p class="text-center">Tidak Ada Produk Yang Tersedia.</p>
       {% endif %}
-      <div class="d-flex mt-3">
-        <button class="btn btn-back" onclick="window.history.back()">Back</button>
-        <a href="{% url 'product_list' %}" class="btn btn-primary">Back to Products</a>
+
+      <div>
+        <button class="btn btn-back" onclick="window.history.back()">Kembali Ke Product</button>
       </div>
     </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const paymentMethodSelect = document.getElementById('payment_method');
+        const qrisContainer = document.getElementById('qris-container');
+        paymentMethodSelect.addEventListener('change', () => {
+          if (paymentMethodSelect.value === 'QRIS') {
+            qrisContainer.style.display = 'block';
+          } else {
+            qrisContainer.style.display = 'none';
+          }
+        });
+      });
+    </script>
   </body>
 </html>

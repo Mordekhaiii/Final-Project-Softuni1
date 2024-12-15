@@ -1,59 +1,91 @@
 from django.shortcuts import render, redirect
-from django.db import transaction
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
+from django.urls import reverse
 from .models import TransactionHistory
 from Payment.models import Payment
-from orders.models import Product  # Import Product model
+
 
 @login_required
 def complete_order(request):
-    # Fetch payments for the logged-in user
-    payments = Payment.objects.filter(user=request.user)
+    """Handles payment completion and redirects to Transaction History."""
+    if request.method == 'POST':
+        # Ambil payment_method dari form
+        payment_method = request.POST.get('payment_method')
 
-    if not payments.exists():
-        messages.info(request, "No payments to process.")
-        return redirect('transaction_history')
+        if not payment_method:
+            messages.error(request, "Please select a payment method.")
+            return redirect('payment_list')
 
-    try:
-        with transaction.atomic():  # Ensure the transaction is atomic
+        # Ambil daftar pembayaran untuk user
+        payments = Payment.objects.filter(user=request.user)
+
+        if not payments.exists():
+            messages.info(request, "No payments to process.")
+            return redirect('payment_list')
+
+        try:
             for payment in payments:
-                print(f"Processing payment: {payment.id} for product: {payment.product.name} and user: {request.user.username}")
+                # Jika metode pembayaran adalah QRIS
+                if payment_method == 'QRIS':
+                    proof = request.FILES.get('proof')
+                    if not proof:
+                        messages.error(request, "Proof of payment is required for QRIS.")
+                        return redirect('payment_list')
+                    
+                    # Buat transaksi dengan status Pending
+                    TransactionHistory.objects.create(
+                        user=request.user,
+                        product=payment.product,
+                        quantity=payment.quantity,
+                        total_price=payment.total_price,
+                        date=timezone.now(),
+                        payment_method=payment_method,
+                        payment_status='Pending',  # Awalnya Pending
+                        proof_of_payment=proof  # Simpan bukti pembayaran
+                    )
 
-                # Create a TransactionHistory record for each payment
-                transaction_history = TransactionHistory.objects.create(
-                    user=request.user,
-                    product=payment.product,  # Using product field
-                    quantity=payment.quantity,
-                    total_price=payment.total_price,
-                    date=timezone.now(),
-                    payment_method=payment.payment_method,  # Assuming this is present in Payment model
-                )
+                # Jika metode pembayaran adalah Cash
+                elif payment_method == 'Cash':
+                    TransactionHistory.objects.create(
+                        user=request.user,
+                        product=payment.product,
+                        quantity=payment.quantity,
+                        total_price=payment.total_price,
+                        date=timezone.now(),
+                        payment_method=payment_method,
+                        payment_status='Completed',  # Langsung Completed
+                    )
 
-                # Print or log the transaction created for debugging
-                print(f"Transaction saved: {transaction_history}")
-
-                # Delete the payment after saving it to transaction history
+                # Hapus pembayaran dari daftar Payment setelah diproses
                 payment.delete()
 
-        messages.success(request, "All payments have been successfully moved to transaction history.")
-    except Exception as e:
-        print(f"Error occurred during transaction: {e}")
-        messages.error(request, f"An error occurred: {e}")
-        return redirect('payment_list')
+            messages.success(request, "Payment processed successfully.")
+        except Exception as e:
+            messages.error(request, f"An error occurred: {e}")
+            return redirect('payment_list')
 
-    return redirect('transaction_history')
+        return redirect('transaction_history')
 
-
-
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from .models import TransactionHistory
 
 @login_required
 def transaction_history(request):
-    # Fetch transaction history for the logged-in user, ordered by creation date
-    transactions = TransactionHistory.objects.filter(user=request.user).order_by('-date')  # 'date' for sorting
+    """Display the user's transaction history."""
+    transactions = TransactionHistory.objects.filter(user=request.user).order_by('-date')
 
-    return render(request, 'riwayat_transaksi/transaction_history.html', {'transactions': transactions})
+    for transaction in transactions:
+        # Perbarui status pembayaran QRIS dari Pending ke Completed jika validasi diperlukan
+        if (
+            transaction.payment_method == 'QRIS' 
+            and transaction.payment_status == 'Completed'
+            and transaction.proof_of_payment
+        ):
+            transaction.payment_status = 'Completed'
+            transaction.save()
+
+    return render(
+        request,
+        'riwayat_transaksi/transaction_history.html',
+        {'transactions': transactions}
+    )

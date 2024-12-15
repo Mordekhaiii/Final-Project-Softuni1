@@ -4,13 +4,13 @@ from django.shortcuts import render,HttpResponse, redirect
 from django.contrib.auth.forms import UserCreationForm
 from halaman.forms import CreateUserForm
 import logging
-from .models import UserProfile
 from .forms import EditProfileForm
+from .models import UserProfile
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
-from django.contrib.auth.models import User
+
 
 
 @login_required
@@ -25,6 +25,11 @@ logger = logging.getLogger(__name__)
 def home(request):
     logger.info("Home view accessed")
     return render(request, 'home.html')
+
+from django.shortcuts import render
+
+def home(request):
+    return render(request, 'welcome_popup.html')
 
 # Update Profile
 from .forms import UserUpdateForm, CustomPasswordChangeForm
@@ -60,6 +65,7 @@ def update_user_profile(request):
 # Timestap setiap file
 from django.utils.timezone import now
 
+# Jika CSSnya tidak berubah saya pakai ini dibelakangnya
 def contact_view(request):
     return render(request, 'contact.html', {'timestamp': now().timestamp()})
 

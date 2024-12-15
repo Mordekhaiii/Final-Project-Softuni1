@@ -1,0 +1,131 @@
+/* General Styles */
+body {
+    font-family: "Poppins", sans-serif;
+    background-color: rgb(100, 42, 0);
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Container for the page content */
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Header Style */
+h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    color: rgb(161, 67, 0);
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Table Style */
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+table th, table td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+table th {
+    background-color: rgb(161, 67, 0);
+    color: #fff;
+    font-weight: bold;
+}
+
+table tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+table tr:hover {
+    background-color: #e9ecef;
+    cursor: pointer;
+}
+
+/* Badge Styles */
+.badge {
+    padding: 5px 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.bg-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.bg-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.bg-warning {
+    background-color: #ffc107;
+    color: white;
+}
+
+
+
+/* Button Kehome */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.5s ease, color 0.5s ease;
+  }
+  
+  /* Button Awal */
+  .btn-primary {
+    background-color: #333;
+    color: #fff;
+    border: 1px solid white;
+  }
+  
+  .btn-primary:hover {
+    background-color: chocolate;
+    color: #fff;
+  }
+  
+  /* Flexbox Container for Centered Alignment */
+  .d-flex {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    table th, table td {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .container {
+        margin: 20px;
+        padding: 20px;
+    }
+}

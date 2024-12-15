@@ -15,3 +15,12 @@ class PaymentForm(forms.ModelForm):
         # Customizing the appearance of fields
         self.fields['product'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Select Product'})
         self.fields['quantity'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Enter Quantity'})
+
+
+# Bukti Pembayaran
+from .models import PaymentProof  # Model untuk menyimpan bukti pembayaran
+
+class PaymentProofForm(forms.ModelForm):
+    class Meta:
+        model = PaymentProof
+        fields = ['proof']  # Field untuk mengunggah bukti pembayaran

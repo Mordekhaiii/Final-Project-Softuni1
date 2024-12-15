@@ -1,0 +1,181 @@
+body {
+    font-family: "Poppins", sans-serif;
+    background-color: #f9fafa;
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  h1 {
+    text-align: center;
+    font-size: 2rem;
+    color: rgb(161, 67, 0);
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  .table {
+    width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .table th,
+  .table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+  }
+  .table th {
+    background-color: rgb(161, 67, 0);
+    color: #ffffff;
+    font-weight: bold;
+  }
+  .table tr:nth-child(even) {
+    background-color: #f8f9fa;
+  }
+  .table tr:hover {
+    background-color: #e9ecef;
+    cursor: pointer;
+  }
+
+  /* Button */
+  .btn-back {
+    width: 100%;
+    background-color: #5a6268;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    justify-content: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .btn-back:hover {
+    background-color: grey;
+  }
+  .confirm-payment-button {
+    width: 100%;
+    background-color: chocolate;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .confirm-payment-button:hover {
+    background-color: rgb(196, 92, 17);
+
+   /* Tombol Kurangi Produk */
+.btn-kurangi {
+    background-color: #ffc107; /* Warna kuning */
+    color: #212529; /* Warna teks gelap */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-kurangi:hover {
+    background-color: #e0a800; /* Warna kuning lebih gelap */
+    color: #fff; /* Teks putih saat hover */
+}
+
+/* Tombol Hapus Produk */
+.btn-hapus {
+    background-color: #dc3545; /* Warna merah */
+    color: #fff; /* Teks putih */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-hapus:hover {
+    background-color: #bd2130; /* Warna merah lebih gelap */
+    color: #fff; /* Tetap putih */
+}
+
+/* Button End */
+  }
+  .total-payment {
+    font-weight: bold;
+    text-align: right;
+    margin-top: 20px;
+    font-size: 1.3rem;
+    color: grey;
+  }
+  select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #495057;
+  }
+  .proof-container {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .proof-label {
+    font-weight: bold;
+    color: #333;
+  }
+  .proof-input {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+  }
+  .qris-container {
+    display: none;
+    margin-top: 20px;
+    padding: 20px;
+    text-align: center;
+    background-color: #f1f3f5;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+  }
+  .qris-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  .qris-image {
+    width: 100%;
+    max-width: 250px;
+    margin: 0 auto;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  .qris-instructions {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #555;
+    font-style: italic;
+  }
