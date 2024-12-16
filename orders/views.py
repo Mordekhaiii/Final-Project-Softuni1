@@ -144,7 +144,6 @@ from django.contrib.auth.decorators import login_required
 #     return render(request, 'orders/orders.html', {'orders': orders})
 
 # Alur End
-
 def product_list_view(request):
     products = Product.objects.all()
     return render(request, 'orders/product_list.html', {'products': products})

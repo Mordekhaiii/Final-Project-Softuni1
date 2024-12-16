@@ -1,17 +1,17 @@
 document.addEventListener("alpine:init", () => {
-Alpine.data("products", () => ({
-  items: [
-    { id: 1, name: "Robusta Brazil", img: "1.jpg", price: 20000 },
-    { id: 2, name: "Arabica Blend", img: "2.jpg", price: 25000 },
-    { id: 3, name: "Primo Passo", img: "3.jpg", price: 30000 },
-    { id: 4, name: "Coffe Bean", img: "4.jpg", price: 35000 },
-    { id: 5, name: "Sumatra Mandheling", img: "5.jpg", price: 40000 },
-    { id: 6, name: "Papua Mandheling", img: "1.jpg", price: 45000 },
-  ],
-}));
+  Alpine.data("products", () => ({
+    items: [
+      { id: 1, name: "Robusta Brazil", img: "1.jpg", price: 20000 },
+      { id: 2, name: "Arabica Blend", img: "2.jpg", price: 25000 },
+      { id: 3, name: "Primo Passo", img: "3.jpg", price: 30000 },
+      { id: 4, name: "Coffe Bean", img: "4.jpg", price: 35000 },
+      { id: 5, name: "Sumatra Mandheling", img: "5.jpg", price: 40000 },
+      { id: 6, name: "Papua Mandheling", img: "1.jpg", price: 45000 },
+    ],
+  }));
 
   Alpine.store("cart", {
-    items: [],  // This is the cart's items array that starts empty
+    items: [], // This is the cart's items array that starts empty
     total: 0,
     quantity: 0,
 
@@ -68,38 +68,46 @@ Alpine.data("products", () => ({
         minimumFractionDigits: 0,
       }).format(number);
     },
-
-    // Function to handle checkout
-  async checkout() {
-    try {
-        const response = await fetch('/orders/checkout/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-            },
-            body: JSON.stringify({
-                total: this.total,
-                items: this.items,
-            }),
-        });
-
-        const data = await response.json();
-
-        console.log("Response from server:", data); // Debugging respons
-
-        if (data.status === 'success') {
-            // Redirect ke URL yang diberikan
-            window.location.href = data.redirect_url;
-        } else {
-            alert('Error creating order: ' + data.message);
-        }
-    } catch (error) {
-        console.error('Checkout error:', error);
-        alert('An error occurred during checkout');
-    }
-},
   });
 });
 
 
+
+
+
+
+
+
+
+//     // Function to handle checkout
+//   async checkout() {
+//     try {
+//         const response = await fetch('/orders/checkout/', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+//             },
+//             body: JSON.stringify({
+//                 total: this.total,
+//                 items: this.items,
+//             }),
+//         });
+
+//         const data = await response.json();
+
+//         console.log("Response from server:", data); // Debugging respons
+
+//         if (data.status === 'success') {
+//             // Redirect ke URL yang diberikan
+//             window.location.href = data.redirect_url;
+//         } else {
+//             alert('Error creating order: ' + data.message);
+//         }
+//     } catch (error) {
+//         console.error('Checkout error:', error);
+//         alert('An error occurred during checkout');
+//     }
+// },
+//   });
+// });

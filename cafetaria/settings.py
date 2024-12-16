@@ -139,7 +139,7 @@ STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
-]
+] 
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
@@ -156,16 +156,20 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-import os
-import base64
 
-MIDTRANS = {
-    'MERCHANT_ID': os.environ.get('MERCHANT_ID', 'G671320843'),
-    'SERVER_KEY': os.environ.get('SERVER_KEY', 'SB-Mid-server-i9ITuWS8iqlp1mpCpHn8dgyN'),
-    'CLIENT_KEY': os.environ.get('CLIENT_KEY', 'SB-Mid-client-itRZbs0G5omYNzWM'),
-}
 
-def get_encoded_server_key(server_key):
-    return base64.b64encode(server_key.encode('utf-8')).decode('utf-8')
 
-MIDTRANS['ENCODED_SERVER_KEY'] = get_encoded_server_key(MIDTRANS['SERVER_KEY'])
+# Tidak jadi terpakai
+# import os
+# import base64
+
+# MIDTRANS = {
+#     'MERCHANT_ID': os.environ.get('MERCHANT_ID', 'G671320843'),
+#     'SERVER_KEY': os.environ.get('SERVER_KEY', 'SB-Mid-server-i9ITuWS8iqlp1mpCpHn8dgyN'),
+#     'CLIENT_KEY': os.environ.get('CLIENT_KEY', 'SB-Mid-client-itRZbs0G5omYNzWM'),
+# }
+
+# def get_encoded_server_key(server_key):
+#     return base64.b64encode(server_key.encode('utf-8')).decode('utf-8')
+
+# MIDTRANS['ENCODED_SERVER_KEY'] = get_encoded_server_key(MIDTRANS['SERVER_KEY'])

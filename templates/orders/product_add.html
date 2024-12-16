@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,300;0,400;0,700;1,700&display=swap" rel="stylesheet" />
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/edit_product.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/edit_product.css' %}?v={{ timestamp }}" />
 </head>
 <body>
 
@@ -30,7 +30,9 @@
         <button type="submit" class="btn btn-primary">Simpan Produk</button>
     </form>
 
-    <a href="{% url 'product_list' %}" class="btn btn-secondary">Kembali ke Daftar Produk</a>
+    <div>
+        <button class="btn btn-back" onclick="window.history.back()">Kembali Ke Product</button>
+      </div>
 </div>
 
 </body>

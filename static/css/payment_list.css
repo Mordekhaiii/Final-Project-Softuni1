@@ -179,3 +179,56 @@ body {
     color: #555;
     font-style: italic;
   }
+
+  /* Responsive Styles */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  .table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .table th, .table td {
+    text-align: left;
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .qris-container img {
+    width: 100%;
+    height: auto;
+  }
+
+  .proof-container label, 
+  .proof-container input {
+    width: 100%;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .confirm-payment-button,
+  .btn-back {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 20px;
+  }
+
+  .qris-header,
+  .qris-instructions {
+    font-size: 14px;
+  }
+
+  .btn {
+    font-size: 14px;
+  }
+}

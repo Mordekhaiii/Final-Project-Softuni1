@@ -73,21 +73,21 @@ h1 {
     font-size: 1rem;
     text-decoration: none;
     color: #fff;
-    background-color: #fda085;
+    background-color: chocolate;
     border-radius: 6px;
     transition: background-color 0.3s ease;
 }
 
 .action-buttons a:hover {
-    background-color: #f6a364;
+    background-color: #db6f1c;
 }
 
 .action-buttons .delete {
-    background-color: #e74c3c;
+    background-color: grey;
 }
 
 .action-buttons .delete:hover {
-    background-color: #c0392b;
+    background-color: #6b6b6b;
 }
 
 /* For responsive design */

@@ -9,6 +9,7 @@ class Product(models.Model):
     img = models.ImageField(upload_to='products/', default='path/to/default/image.jpg')  # Default image path
     stock = models.IntegerField(default=0)
     is_available = models.BooleanField(default=True)
+    
 
     def __str__(self):
         return self.name
@@ -18,6 +19,7 @@ class Product(models.Model):
         self.is_available = self.stock > 0
         super().save(*args, **kwargs)
 
+# Tidak jadi dipakai
 # class Order(models.Model):
 #     user = models.ForeignKey(User, on_delete=models.CASCADE)
 #     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
